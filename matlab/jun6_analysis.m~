@@ -44,34 +44,35 @@ for iCase=1:numel(ClusterCase)
     genes=join([genes, ass_num]);
     subplot(2,1,1)
     hold on
-    mn=mn';mx=mx';
-    mn(2,:)=nan;
-    mx(2,:)=nan;
+
+    mn(:,2)=nan;
+    mn(:,2)=nan;
     
-    H = plot(mn, mx, 'g.');
+    H1 = plot(mn, mx, 'g.');
     
-    arrayfun(@(i) set(H(i), 'Color', [0 0 1]), del);
+    arrayfun(@(i) set(H(i), 'Color', cmap(round(myP(i)*1000)+1,:)), 1:length(H));
     
-    %H2 = plot(mn(del), mx(del), 'b.');
+    H2 = plot(mn(del), mx(del), 'b.');
     title(sprintf('Num of del = %d/ %d', length(del), numel(mn)))
     
-    set(H,'ButtonDownFcn',@upon_click)
+    set(H1,'ButtonDownFcn',@upon_click)
+    set(H2,'ButtonDownFcn',@upon_click)
     
 
-%     subplot(2,1,2)
-%     hold on
-%     genesource=myCase.GeneSource;
-%     
-%     pos=1:numel(mn);
-%     H3= plot(pos, mn./mx, 'g.');
-%     H4=plot(del, mn(del)./mx(del),'b.');
-%     
-%     set(H3,'ButtonDownFcn',@upon_click)
-%     set(H4,'ButtonDownFcn',@upon_click)
-% 
-% 
-%     set(gca,'Xtick',pos,'Xticklabel',myCase.GeneName,'XtickLabelRotation',90)
-%     set(gca,'TickLength',[0.001, 0.01])
+    subplot(2,1,2)
+    hold on
+    genesource=myCase.GeneSource;
+    
+    pos=1:numel(mn);
+    H3= plot(pos, mn./mx, 'g.');
+    H4=plot(del, mn(del)./mx(del),'b.');
+    
+    set(H3,'ButtonDownFcn',@upon_click)
+    set(H4,'ButtonDownFcn',@upon_click)
+
+
+    set(gca,'Xtick',pos,'Xticklabel',myCase.GeneName,'XtickLabelRotation',90)
+    set(gca,'TickLength',[0.001, 0.01])
     pause;
     clf
 end
@@ -80,8 +81,8 @@ end
 %     
 function upon_click(s,~)
     %disp(s.UserData) %
-    i=s.SeriesIndex;
-    disp([mn(1,i) mx(1,i)])
+    i=s.XData(s.SeriesIndex);
+    disp([mn(i) mx(i)])
     %plot_alignment_report(allPhages(m), hMin, hMax, t,ax2);
 
 end
