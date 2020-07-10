@@ -45,7 +45,9 @@ function cl=get_cluster_location(mn,mx,delet, an, gs)
         
         %from the left: the last increase from 0 to 1 that is followed by 1
         %or if all 1's set as 1 (there will always be at least 1 true)
-        lnewcord=min([find(diff(lmnmx)==1,1,'last')+1 1]);
+        
+        lnewcord=[find(diff(lmnmx)==1,1,'last')+1 numel(lmnmx)];
+        lnewcord=lnewcord(1);
         
         cl(c,2)=rend(rnewcord);
         cl(c,1)=lend(lnewcord);
@@ -106,7 +108,7 @@ function cl=get_cluster_location(mn,mx,delet, an, gs)
         is_mnmx2=any(mnmx2(1:min(2, length(mnmx2)))>0.0005);
         
         mx2=sort(mx(coords(1):coords(2)));
-        ismx2=all(mx2(1:min(2, length(mnmx2)))<0.5);
+        ismx2=all(mx2(max(1, length(mx2)-1):end)<0.5);
         
         if  is_mnmx2 || ismx2 || numel(mnmx2)==1
             cl(c,:)=[];
