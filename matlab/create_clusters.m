@@ -6,6 +6,7 @@ load('gap_data');
 Path.Reports='alignmentReports';
 Path.Clusters='clusterReports';
 disp("create clusters")
+h=1;
 for ins=1:h
     ClusterCase=[];
     m=moptions{pipevar.report_multi(ins)+1};

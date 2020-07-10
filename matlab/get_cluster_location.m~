@@ -105,10 +105,10 @@ function cl=get_cluster_location(mn,mx,delet, an, gs)
         mnmx2=sort(mn(coords(1):coords(2))./mx(coords(1):coords(2)));
         is_mnmx2=any(mnmx2(1:min(2, length(mnmx2)))>0.0005);
         
-        mx2=sort(mx(coords(1):coords(2)));
-        ismx2=all(mx2(1:min(2, length(mnmx2)))<0.5);
+        mx2=sort(mx(coords(1):coords(2)))
+        ismx2=
         
-        if  is_mnmx2 || ismx2 || numel(mnmx2)==1
+        if  any(mnmx2(1:min(2, length(mnmx2)))>0.0005) || numel(mnmx2)==1
             cl(c,:)=[];
         else
             c=c+1;
