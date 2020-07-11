@@ -42,7 +42,7 @@ load([Path.Reports  dl 'all_alignments' id 'trun_report.mat'], 'Case')
 % end
 
 
-plot_clusters(Path, moptions, pipevar, m, ClusterCase, Case)
+plot_clusters(Path,pipevar, m, ClusterCase, Case, ins)
 
 
 
