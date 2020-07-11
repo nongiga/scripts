@@ -2,7 +2,7 @@ function plot_clusters(Path,pipevar, m, ClusterCase, Case, ins)
     dl=filesep;
     id=[ num2str(pipevar.bp(ins)) m  ];  
 
-    load([Path.Reports  dl 'all_alignments' id 'trun_report.mat'], 'Case')  
+    
 
     fig2=figure(2);
     ax3 = axes(fig2);
@@ -45,29 +45,30 @@ function plot_clusters(Path,pipevar, m, ClusterCase, Case, ins)
   
     function upon_click(s,~)
         %disp(s.UserData) %
-        i=s.SeriesIndex;
+        i=s.XData(1);
         fprintf("%f %f %f %f %f\n",i, mn(i), mx(i), myCase.GeneLength(i), myCase.AssemblyCov(i) )
 
-        disp(myCase.GeneName(i));
+        disp(myCase.GeneName{i});
         
         cNum=Cl.CaseNum;
         gl=myCase.GeneLength(i);
         
-        if bc_i==~cNum
-            myCase=load([Path.Reports dl 'tree' num2str(Cl.Num) '_' id '_bc.mat'], 'BaseCov');
+        if bc_i~=cNum
+            load([Path.Reports dl 'tree' num2str(Cl.Num) '_' id '_bc.mat'], 'BaseCov');
+            myCase.BaseCov=BaseCov;
             bc_i=cNum;
         end
         
         
-        
-        for j=1:size(BaseCov,2)
+        cla(ax3)
+        for j=1:size(myCase.BaseCov,2)
             plot(ax3,1:gl,cumsum(myCase.BaseCov{i,j})/sum(myCase.BaseCov{i,j}),'-','linewidth',1);
             hold on;            
         end
 
         
         axis(ax3,[0 myCase.GeneLength(i) 0.01 1])
-        tl=sprintf("Reads Alignment to Gene %s in Case %6.0f", myCase.GeneName(i), cNum);
+        tl=sprintf("Reads Alignment to Gene %s in Case %6.0f", myCase.GeneName{i}, cNum);
         ax3.Title.String=tl;
 
     end
