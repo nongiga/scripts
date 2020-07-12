@@ -22,6 +22,10 @@ create_alignment_biomaps
 summarize_alignment_reports
 
 create_clusters
+
+truncate_alignment_report
+
+plot_clusters
 % % % 
 % observe_alignment
 % % 
