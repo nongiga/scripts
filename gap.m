@@ -11,22 +11,25 @@ initialize_gap
 % % create Roary subdirs
 initialize_case_folders
 % 
-% 
-% copy_files_over
-% 
 % % run programs in commandline
 % 
-% commandline_step
-
-%% run functions on info
-
-create_alignment_biomaps(IsolatesNames, pipevar, SameStrains, Path, GlobalName)
+commandline_step
+% 
+% %% run functions on info
+% 
+create_alignment_biomaps
 
 summarize_alignment_reports
-% % 
-observe_alignment
-% 
+
 create_clusters
+
+truncate_alignment_report
+
+plot_clusters
+% % % 
+% observe_alignment
+% % 
+% 
 
 
 

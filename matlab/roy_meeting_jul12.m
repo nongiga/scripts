@@ -1,4 +1,4 @@
-
+clear all; close all;
 dl=filesep;
 load('gap_data', 'moptions', 'pipevar', 'Path');
 Path.Reports='alignmentReports';
