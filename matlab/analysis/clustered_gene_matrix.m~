@@ -19,7 +19,9 @@ all_genes=vertcat(all_genes{:});
 all_descriptions=horzcat(all_descriptions{:})';
 
 clean_genes=extractBefore(strcat(all_genes, '_'), '_');
-[u, uidx]=unique(clean_genes);
+[u, uidx]=unique(clean_genes, '_'));
+
+
 
 
 T=table('Size', [numel({ClusterCase.Num}) numel(u)], 'VariableNames', u, ...
@@ -34,6 +36,5 @@ cellsizes=[cellsizes{:}];
 casenums=arrayfun(@(i) repelem({ClusterCase(i).Num},cellsizes(i)), 1:numel(cellsizes), 'UniformOutput', false)
 casenums=[casenums{:}];
 
-for i=1:numel(casenums)
-    T{casenums{i}, clean_genes{i}}=1;
-end
+
+T{arrayfun(@(i) casenums{i} , clean_genes{i}, 1:numel(casenums))}=1;
