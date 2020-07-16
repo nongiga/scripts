@@ -1,6 +1,6 @@
 
-close all
-clear all
+% close all
+% clear all
 dl=filesep;
 load('gap_data');
 Path.Reports='alignmentReports';
@@ -13,7 +13,7 @@ for ins=1:h
     id=[ num2str(pipevar.bp(ins)) m  ];   
 
     
-    load([Path.Reports  dl 'all_alignments' id '_report.mat'], 'Case')        
+%     load([Path.Reports  dl 'all_alignments' id '_report.mat'], 'Case')        
 
     
     for iCase = 1: numel(Case)
@@ -51,6 +51,18 @@ for ins=1:h
             isTra=arrayfun(@(i) any(contains(myCluster.Genes{i}, 'tra')) | ...
                 any(contains(myCluster.Description{i}, 'transposon')), 1:length(myCluster.Genes), 'UniformOutput', 0);
             myCluster.isTra=[isTra{:}];
+            
+            %number of actual definitely independent clusters
+            %if the assembly is the same as the assembly of th egenes at
+            %both sides
+            sL=myCluster.Assembly == myCase.AssemblyNum(myCluster.Loc(:,1)-1)';
+            sR=myCluster.Assembly == myCase.AssemblyNum(min(myCluster.Loc(:,2)+1, length(myCase.AssemblyNum)))';
+            myCluster.N= sum(sR & sL);
+            if myCluster.N<numel(myCluster.Assembly)
+                myCluster.N=myCluster.N+1;
+            end
+            
+              
             save([Path.Clusters dl 'tree' num2str(C.Num) '_' id], 'myCluster' )
             ClusterCase=[ClusterCase myCluster];
         end

@@ -21,12 +21,15 @@ for ins=1:h
             %copy only *.gff and roary_output folder
             
             system(['cp -u ' SourceDir '*.gff ' TreeFolder]);
+            system(['cp -u ' SourceDir '*.faa ' TreeFolder]);
             system(['cp -r -u ' SourceDir 'roary_output ' TreeFolder ]);
         else
             fprintf("%s has changed\n", TreeName);
             for j=1:numel(sp)
                 system(['cp -u ' pipevar.prokka{ins} dl '*' GlobalName sp{j}  '_prokka' dl ...
                     'SeqPlate' sp{j} '.gff ' TreeFolder dl GlobalName sp{j} '.gff']);
+                system(['cp -u ' pipevar.prokka{ins} dl '*' GlobalName sp{j}  '_prokka' dl ...
+                    'SeqPlate' sp{j} '.faa ' TreeFolder dl GlobalName sp{j} '.faa']);
              end
         end
 

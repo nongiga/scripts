@@ -14,7 +14,10 @@ initialize_case_folders
 % % run programs in commandline
 % 
 commandline_step
-% 
+
+%get a pangneome file of the proteins
+get_protein_pangenome
+
 % %% run functions on info
 % 
 create_alignment_biomaps
