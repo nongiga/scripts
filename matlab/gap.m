@@ -8,8 +8,6 @@ clear all; close all;
 %initialize variables
 initialize_gap
 
-% % create Roary subdirs
-initialize_case_folders
 % 
 % % run programs in commandline
 % 

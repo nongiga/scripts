@@ -16,7 +16,7 @@ split_sequence(){
 			mkdir -p $1/$SEQDIR; cd $1/$SEQDIR
 			if [ ! -f R1_spl$2.combined.trimmed.fastq.gz ] && [ -f $SEQPATH/R1_combined.trimmed.fastq.gz ]
 			then
-				~/bin/seqkit sliding \
+				seqkit sliding \
 				-s $2 -W $2 \
 				$SEQPATH/R1_combined.trimmed.fastq.gz | \
 				gzip -c >R1_spl$2.combined.trimmed.fastq.gz

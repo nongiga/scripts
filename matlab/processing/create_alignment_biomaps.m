@@ -24,10 +24,10 @@ for ins=1:height(pipevar)
     %if it is not a redo, only start making reports from scratch to the
     %isolates for which files do not exist (in a redo will also go over
     %reports and 'fix' them)
-    
-    if ~pipevar.recreate_reports(ins)
-        l=l(r); s=s(r); 
-    end
+%     
+%     if ~pipevar.recreate_reports(ins)
+%         l=l(r); s=s(r); 
+%     end
         
     %loop through each case
     if pipevar.parallel(ins)

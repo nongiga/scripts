@@ -1,6 +1,6 @@
 for ins=1:h
     %run prokka
-    prokka_command=[pipevar.bash_folder{ins} 'prokka.sh ' pipevar.assembly_folder{ins} ' ' Path.Prokka ' ' num2str(pipevar.mm(ins))];
+    prokka_command=[pipevar.bash_folder{ins} 'prokka.sh ' pipevar.assembly_folder ' ' Path.Prokka ' ' num2str(pipevar.mm(ins))];
     system(prokka_command, '-echo');
     
     initialize_case_folders
@@ -28,5 +28,5 @@ for ins=1:h
         bowtie_align_command=[pipevar.bash_folder{ins} 'bowtie_align.sh ' ...
             Path.Alignment ' ' num2str(pipevar.bp(ins)) ' ' num2str(pipevar.mm(ins))];
     end
-%     system(bowtie_align_command,'-echo');
+    system(bowtie_align_command,'-echo');
 end

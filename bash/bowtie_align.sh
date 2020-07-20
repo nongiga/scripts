@@ -28,19 +28,21 @@ bowtie_align() {
 			samtools view -bS -o aligned$bp.bam aligned$bp.sam
 			samtools sort  aligned$bp.bam -o aligned_sorted$bp.bam
 			samtools index aligned_sorted$bp.bam
-			rm aligned$bp.bam aligned$bp.sam
+
+			gzip multialigned$bp.fastq unaligned$bp.fastq
+
+			rm aligned$bp.bam aligned$bp.sam R1_spl$bp.combined.trimmed.fastq.gz
 		fi
 		
-		if [ ! -f aligned$bp.vcf ] 
-		then
-			samtools mpileup -t AD -ugf $subdir/roary_output/pan_genome_reference.fa aligned_sorted$bp.bam > pileup$bp.vcf.temp
-			/media/kishonylab/KishonyStorage/Apps/bcftools/bcftools/bcftools view -o aligned$bp.vcf pileup$bp.vcf.temp
-			rm pileup$bp.vcf.temp
-		fi
+		
 
 		if [ ! -f depth_clean$bp.csv ]
 		then
+			samtools mpileup -t AD -ugf $subdir/roary_output/pan_genome_reference.fa aligned_sorted$bp.bam > pileup$bp.vcf.temp
+			/media/kishonylab/KishonyStorage/Apps/bcftools/bcftools/bcftools view -o aligned$bp.vcf pileup$bp.vcf.temp
 			awk -F'[=\t;]' '{print $1 , $2, $9}' aligned$bp.vcf | sed '/^#/d' > depth_clean$bp.csv
+			rm pileup$bp.vcf.temp aligned$bp.vcf
+
 		fi
 
 	done
