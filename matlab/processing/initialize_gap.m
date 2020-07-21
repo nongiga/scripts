@@ -14,7 +14,8 @@ Path=struct('Main', PathName, ...
             'Alignment',[PathName dl 'Cases'], ...
             'Reports', [PathName dl 'alignmentReports'], ...
             'Clusters', [PathName dl 'clusterReports'],...
-             'Prokka', [PathName dl 'prokka']);
+             'Prokka', [PathName dl 'prokka'],...
+             'Assembly', [PathName dl 'assembly']);
 structfun(@mymkdir, Path);
 
 % Getting isolates details and cretaing list of isolates to select from
@@ -44,6 +45,10 @@ moptions={'','.multi'};
 % save all collected variables
 save([Path.Main dl 'gap_data'], 'Path', 'pipevar', 'IsolatesNames', 'GlobalName', 'SameStrains', 'h', 'moptions');
 
+copy_over_assemblies
+
 function mymkdir(d)
     if ~isfolder(d), mkdir(d); end
 end
+
+

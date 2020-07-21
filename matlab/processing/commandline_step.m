@@ -1,6 +1,6 @@
 for ins=1:h
     %run prokka
-    prokka_command=[pipevar.bash_folder{ins} 'prokka.sh ' pipevar.assembly_folder{ins} ' ' Path.Prokka ' ' num2str(pipevar.mm(ins))];
+    prokka_command=[pipevar.bash_folder{ins} 'prokka.sh ' Path.Assembly ' ' Path.Prokka ' ' num2str(pipevar.mm(ins))];
     system(prokka_command, '-echo');
     
     initialize_case_folders

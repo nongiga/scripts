@@ -25,8 +25,8 @@ for i = 1:height(SS)
     else
         fprintf("%s has changed\n", TreeName);
         for j=1:numel(sp)
-            system(['cp -u ' Path.Prokka dl '*' GlobalName sp{j}  '_prokka' dl ...
-                'SeqPlate' sp{j} '.gff ' TreeFolder dl GlobalName sp{j} '.gff']);
+            system(['cp -u ' Path.Prokka dl GlobalName sp{j}  dl ...
+                 GlobalName sp{j}  '.gff ' TreeFolder dl GlobalName sp{j} '.gff']);
 %                 system(['cp -u ' Path.Prokka dl '*' GlobalName sp{j}  '_prokka' dl ...
 %                     'SeqPlate' sp{j} '.faa ' TreeFolder dl GlobalName sp{j} '.faa']);
          end
