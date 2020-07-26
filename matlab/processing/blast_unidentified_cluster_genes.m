@@ -10,15 +10,12 @@ m=moptions{pipevar.report_multi(ins)+1};
 id=[ num2str(pipevar.bp(ins)) m  ];  
 
 load([Path.Clusters  dl 'all_clusters' id '_report.mat'], 'ClusterCase')
-load([Path.Reports  dl 'all_alignments' id '_report.mat'], 'Case')
+%load([Path.Reports  dl 'all_alignments' id '_report.mat'], 'Case')
 
-%% get all gene names
+%% get all unidentified genes
 
 all_genes=[ClusterCase.Genes];
-all_descriptions=vertcat(ClusterCase.Description);
 all_genes=vertcat(all_genes{:});
-all_descriptions=vertcat(all_descriptions{:});
-
 unidentified_genes=all_genes(contains(all_genes, 'group_'));
 
 all_sequences=[];
@@ -44,22 +41,55 @@ for iCC=1:numel(ClusterCase)
 end
 
 
-%% cd-hit
+%% BLAST
 entry_name=join( [all_genes, casenums'], '-') ;
 mkdir('blast');
 Path.Blast='blast';
+
+
 cd(Path.Blast)
 blastfa='undefined.fa';
+
 p_seq=nt2aa(all_sequences);
+
+fastawrite(blastfa, entry_name, all_sequences);
+% blastformat('Inputdb', blastfa, 'Protein', 0); 
+% blast_results=blastlocal('InputQuery', blastfa, 'Database',blastfa, 'Program', 'blastn')
+
+
 blastfaa='undefined_p.fa';
 fastawrite(blastfaa, entry_name, p_seq);
 
+
+
+%blastformat('Inputdb', blastfaa, 'Protein', 1); 
+%blast_results=blastlocal('InputQuery', blastfaa, 'Database',blastfaa, 'Program', 'blastp')
+
+%save('blast_results', 'blast_results');
+
+
+%% process blast_results
+% match_table={};
+% for i=1:numel(blast_results)
+%     br=blast_results(i);
+%     matches={};
+%     for j=1:numel(br.Hits)
+%         if br.Hits(j).HSPs(1).Identities.Percent>98
+%             matches=[matches ;{br.Hits(j).Name}];
+%         end
+%     end
+%     match_table=[match_table; {br.Query} {matches}];
+%     
+% end
+
+%%  ughh just throw it out the window and use cd-hit. why re-inventthe wheel
+% just because Idan hasn't heard of it?
+
+
 system('iterative_cdhit -m undefined_p.fa -f undefined_clustered_filtered.fa -c undefined_clustered -v');
 
-
-%% process cd-hi results to cluster genes
-
 ClusterT=readtable('undefined_p.fa.groups', 'FileType', 'text');
+
 
 clustered_genes=all_genes;
 for i=1:height(ClusterT)
@@ -73,56 +103,17 @@ for i=1:height(ClusterT)
     elseif sum(c)
         %extract gene name from first defined group and apply it to all
         d_g=genes(~c);
-        d_g=d_g{1};
-        last_pos = find(d_g == '-', 1, 'last');
-        name=d_g(1:last_pos);
-        clustered_genes(ismember(entry_name, genes(c)))={name};
+        name=extractBefore(d_g(1), '-');
+        clustered_genes(ismember(entry_name, genes(c)))=name;
         
     end
     
 end
 
-%% now all the rest of the undefined genes that were not clustered will be named based
+% now all the rest of the undefined genes that were not clustered will be named based
 % on their source
-still_undefined=contains(clustered_genes, 'group');
-clustered_genes(still_undefined)=erase(entry_name(still_undefined), '_');
-
-clean_genes=extractBefore(strcat(clustered_genes, '_'), '_');
-[u, uidx]=unique(clean_genes);
+still_undefined=contains(clustered_genes, 'group')
+clustered_genes(still_undefined)=entry_name(still_undefined);
 
 
-T=table('Size', [numel({ClusterCase.Num}) numel(u)], 'VariableNames', u, ...
-    'VariableType', repelem({'uint8'}, numel(u)));
-T.Properties.VariableDescriptions=all_descriptions(uidx);
-T.Properties.RowNames={ClusterCase.Num};
 
-
-is_plasmid=arrayfun(@(i) arrayfun(@(j) repmat(ClusterCase(i).IsPlasmid(j), ClusterCase(i).GeneNum(j),1), 1:numel(ClusterCase(i).GeneNum), 'UniformOutput', false), 1:numel(ClusterCase), 'UniformOutput', false);
-is_plasmid=[is_plasmid{:}];
-is_plasmid=vertcat(is_plasmid{:});
-
-
-for i=1:numel(casenums)
-    T{casenums{i}, clean_genes{i}}=uint8(is_plasmid(i))+1;
-end
-
-save('clustered_genes_table.mat','T');
-
-%% simulate random permutation of numbers in vector
-seed=100;
-Tmat=table2array(T);
-for i=1:height(T)
-    seed=seed+1;
-    s=rng(seed);
-    Tmat(i,:)=Tmat(i, randperm(width(T)));
-end
-
-
-binRange=0:1:10;
-
-sim=histcounts(sum(Tmat>0), [binRange Inf]);
-real=histcounts(sum(T{:,:}>0),[binRange Inf]);
-
-bar(binRange, [sim;real]')
-
-all_descriptions(uidx(sum(T{:,:}>0)>8))

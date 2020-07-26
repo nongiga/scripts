@@ -12,6 +12,7 @@ for ins=1:h
     %split sequence
     split_sequence_command=sprintf("%s/split_sequence.sh %s %s %d %d", ...
         pipevar.bash_folder{ins}, Path.Alignment, pipevar.read_folder{ins}, pipevar.bp(ins),  pipevar.mm(ins));
+    disp(split_sequence_command);
     system(split_sequence_command, '-echo');
 
     %build bowtie database
@@ -28,5 +29,5 @@ for ins=1:h
         bowtie_align_command=[pipevar.bash_folder{ins} 'bowtie_align.sh ' ...
             Path.Alignment ' ' num2str(pipevar.bp(ins)) ' ' num2str(pipevar.mm(ins))];
     end
-%     system(bowtie_align_command,'-echo');
+     system(bowtie_align_command,'-echo');
 end

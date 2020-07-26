@@ -24,9 +24,6 @@ load([Path.Reports  dl 'all_alignments' id 'trun_report.mat'], 'Case')
 
 plot_clusters(Path,pipevar, m, ClusterCase, Case, ins)
 
-<<<<<<< HEAD
-
-=======
 function plot_clusters(Path,pipevar, m, ClusterCase, Case, ins)
     dl=filesep;
     id=[ num2str(pipevar.bp(ins)) m  ];  
@@ -104,5 +101,4 @@ function plot_clusters(Path,pipevar, m, ClusterCase, Case, ins)
 
 
 end
->>>>>>> 4ad1e35d891aa920437312ed9dcbe9d4818c2c87
 
