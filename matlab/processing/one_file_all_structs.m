@@ -1,8 +1,5 @@
 load('gap_data.mat');
 dl=filesep;
-Case=struct('Num',{},'SeqPlate',{},'GeneName',{},'Date',{},'NCov',{}, 'pval', {}, 'Reads',{});
-
-AllCase=[]
 for ins=1:h
     
     id=[ num2str(pipevar.bp(ins)) moptions{pipevar.report_multi(ins)+1} ];
@@ -16,13 +13,19 @@ for ins=1:h
         disp(i)
         TreeName=['tree' SS.Case{i}];
         FileName=[Path.Alignment dl TreeName dl 'alignments' id '.mat'];
-        copyfile(FileName, [Path.Reports dl TreeName '_' id '.mat'])
         load(FileName, 'myCase')
-        AllCase(i)=myCase;
-        for fn = fieldnames(Case)'
-           Case(i).(fn{1}) = myCase.(fn{1});
+        if ~exist('Case', 'var')
+            Case=myCase;
         end
+        Case(i)=myCase;
     end
-    save([Path.Reports  dl 'all_alignments' id '_report.mat'], 'Case')
+    
+    f=fieldnames(Case)';
+    c=cell(length(f),1)
+    sCase=cell2struct(c,f);
+    for fn = f
+       sCase.(fn{1}) = {Case.(fn{1})};
+    end
+    
+    save([Path.Reports  dl 'all_alignment_struct' id '_report.mat'], '-struct','sCase','-v7.3')
 end
-

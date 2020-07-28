@@ -19,8 +19,8 @@ for ins=1:1
     for i=1:height(SS)
         TreeName=['tree' SS.Case{i}]
         load([Path.Reports dl TreeName '_' id '.mat'], 'myCase')
-        BaseCov=myCase.BaseCov;
-        save([Path.Reports  dl TreeName '_' id '_bc.mat'], 'BaseCov')
+%         BaseCov=myCase.BaseCov;
+%         save([Path.Reports  dl TreeName '_' id '_bc.mat'], 'BaseCov')
         for fn = fieldnames(Case)'
            Case(i).(fn{1}) = myCase.(fn{1});
         end

@@ -12,7 +12,7 @@
 
 ############################################################################
 # Run prokka
-activate virsorter
+conda activate virsorter
 export PERL5LIB=/media/kishonylab/KishonyStorage/noga/perl5/lib/perl5/
 virsorter(){
 
@@ -20,13 +20,13 @@ virsorter(){
     BASENAME=$(basename $1)
     echo $BASENAME
 
-    if [ ! -f virsorter/${BASENAME} ]
+    if [ ! -f virsorter/${BASENAME}/Predicted_viral_sequences/VIRSorter_prophages_cat-6.fasta ]
     then
-
+    		rm -rf virsorter/${BASENAME}/
 		   ~/opt/VirSorter/wrapper_phage_contigs_sorter_iPlant.pl \
 		   -f assembly/${BASENAME}/contigs.fasta \
 		   --wdir virsorter/${BASENAME} \
-		   --db 1 --ncpu 4 \
+		   --db 1 --ncpu 1 \
 		   --data-dir ~/opt/virsorter-data/ 
 	fi
 
@@ -38,4 +38,4 @@ export -f virsorter
 #read -r READSPATH OUTDIR THREADS <<<$(echo "$1 $2 ")
 
 
-parallel --jobs 2 virsorter ::: assembly/* 
+parallel --jobs 6 virsorter ::: assembly/* 
