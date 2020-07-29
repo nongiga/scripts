@@ -51,8 +51,7 @@ end
 entry_name=join( [all_genes, casenums'], '-') ;
 mkdir('blast');
 Path.Blast='blast';
-cd(Path.Blast)
-blastfa='undefined.fa';
+blastfa=[Path.'undefined.fa';
 p_seq=nt2aa(all_sequences);
 blastfaa='undefined_p.fa';
 

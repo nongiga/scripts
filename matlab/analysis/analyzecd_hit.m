@@ -29,21 +29,17 @@ casenums=arrayfun(@(i) repelem({ClusterCase(i).Num},cellsizes(i)), 1:numel(cells
 casenums=[casenums{:}];
 all_locs=[];
 %% get sequence of all genes
-if ~exist('clustered_genes_table.mat', 'file')
-    for iCC=1:numel(ClusterCase)
-        CC=ClusterCase(iCC);
-        load([Path.Reports dl 'tree' CC.Num '_' id '.mat'])
+for iCC=1:numel(ClusterCase)
+    CC=ClusterCase(iCC);
+    load([Path.Reports dl 'tree' CC.Num '_' id '.mat'])
 
-        locs = arrayfun(@(i) CC.Loc(i,1):CC.Loc(i,2), ...
-            1:size(CC.Loc, 1), 'UniformOutput', 0);
-        locs=[locs{:}];
-        all_locs= [all_locs locs];
-        cluster_sequences=myCase.Sequence(locs);
-        all_sequences=[ all_sequences; cluster_sequences];
+    locs = arrayfun(@(i) CC.Loc(i,1):CC.Loc(i,2), ...
+        1:size(CC.Loc, 1), 'UniformOutput', 0);
+    locs=[locs{:}];
+    all_locs= [all_locs locs];
+    cluster_sequences=myCase.Sequence(locs);
+    all_sequences=[ all_sequences; cluster_sequences];
 
-    end
-else
-    load('clustered_genes_table.mat', 'all_sequences')
 end
 
 
@@ -51,10 +47,9 @@ end
 entry_name=join( [all_genes, casenums'], '-') ;
 mkdir('blast');
 Path.Blast='blast';
-cd(Path.Blast)
-blastfa='undefined.fa';
+blastfa=[Path.Blast 'undefined.fa'];
 p_seq=nt2aa(all_sequences);
-blastfaa='undefined_p.fa';
+blastfaa=[Path.Blast 'undefined_p.fa'];
 
 if ~exist('undefined_p.fa.groups', 'file')
     fastawrite(blastfaa, entry_name, p_seq);
@@ -63,7 +58,7 @@ end
 
 %% process cd-hit results to cluster genes
 
-ClusterT=readtable('undefined_p.fa.groups', 'FileType', 'text');
+ClusterT=readtable('blast/undefined_p.fa.groups', 'FileType', 'text');
 hypothetical_loc=ismember(all_descriptions, 'hypothetical protein');
 clustered_descriptions=all_descriptions;
 for i=1:height(ClusterT)

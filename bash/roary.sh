@@ -14,6 +14,7 @@ roary_func() {
 	FN=$1
 	if [ ! -f $FN/roary_output/pan_genome_reference.fa ]
 	then
+		rm -rf $FN/roary_output/
 		echo "$FN"
 		roary \
 		-o $(basename $FN) \
@@ -25,5 +26,5 @@ roary_func() {
 
 export -f roary_func
 echo $READSPATH
-parallel --jobs $2 roary_func ::: $1/*
+parallel --jobs 15 roary_func ::: $1/* ::: $2
 
