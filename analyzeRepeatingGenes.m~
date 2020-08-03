@@ -17,11 +17,10 @@ iClusterCase = 1:nC;
 geneTable = arrayfun(@(c,i) [cat(1,c.Genes{:}),cat(1,c.Description{:}),num2cell(i+zeros(numel(cat(1,c.Genes{:})),1))], ClusterCase, iClusterCase, 'UniformOutput',false)';
 geneTable = cat(1,geneTable{:});
 geneNum=transpose(cat(1,ClusterCase.GeneNum));
-
+geneInsert=cat(2,ClusterCase.Insert);
 
 
 %% is it an insertion or deletion?
-geneInsert=cat(2,ClusterCase.Insert);
 isInsert=arrayfun(@(gi, gn) repmat(gi, gn, 1), geneInsert, geneNum, 'UniformOutput', false);
 isInsert=cat(1,isInsert{:}).*1;
 isInsert(isInsert==0)=-1;
@@ -31,24 +30,16 @@ geneTable(:,4)=num2cell(isInsert);
 %% define if it is a plasmid
 clusterPlasmid=cat(2,ClusterCase.IsPlasmid);
 isPlasmid=arrayfun(@(ci, cn) repmat(ci, cn, 1), clusterPlasmid, geneNum, 'UniformOutput', false);
-isPlasmid=cat(1,isPlasmid{:});
+isPlasmid=cat(1,isPlasmid{:}).*1;
 geneTable(:,5)=num2cell(isPlasmid);
 
-
-%% define if it is on a transposon
-clusterTra=cat(2,ClusterCase.IsTra);
-isTra=arrayfun(@(ci, cn) repmat(ci, cn, 1), clusterTra, geneNum, 'UniformOutput', false);
-isTra=cat(1,isTra{:});
-geneTable(:,6)=num2cell(isTra);
-
 %% max coverage of gene
-maxCov=cat(2,ClusterCase.MaxCov);
-maxCov = arrayfun(@(ci,cn) repmat(ci, cn, 1), maxCov, geneNum, 'UniformOutput',false)';
+maxCov = arrayfun(@(c,i) cat(1,c.MaxCov{:}),num2cell(i+zeros(numel(cat(1,c.Genes{:})),1)), ClusterCase, iClusterCase, 'UniformOutput',false)';
 maxCov = cat(1,maxCov{:});
-geneTable(:,7)=num2cell(maxCov);
+geneNum=transpose(cat(1,ClusterCase.GeneNum));
+geneInsert=cat(2,ClusterCase.Insert);
 
 
-%% 
 %geneTable(:,3) = cellfun(@num2str,geneTable(:,3),'UniformOutput',false);
 jCase = cat(1,geneTable{:,3});
 
@@ -58,7 +49,7 @@ isGroup = cellfun(@(s)startsWith(s,'group'),geneTable(:,1));
 %process the gene table to group all undefined similar proteins
 geneTableMod=process_gene_table(geneTable, ClusterCase);
 % calculate real number of gene deletions
-[nGeneDel_Real, sigGenes, sigLoc]= genes2hist(geneTable(~vertcat(geneTable{:,5}) & ~vertcat(geneTable{:,6})));
+[nGeneDel_Real, sigGenes, sigLoc]= genes2hist(geneTable(vertcat(geneTable{:,5})~=1));
 
 %get table of significant genes
 sigTable=geneTable(startsWith(geneTable(:,1), sigGenes),:);
@@ -101,6 +92,7 @@ errorbar(1:10,mean(nGeneDel_Rand),std(nGeneDel_Rand))
 
 
 %% create table of function and gene
+sigGenes
 
 sigMat=zeros(numel(sigGenes),nC);
 for i=1:numel(sigGenes)

@@ -47,10 +47,11 @@ for ins=1:h
             myCluster.Insert=[C.Date{mxidx(myCluster.Loc(:,1))}]>[C.Date{mnidx(myCluster.Loc(:,1))}];
             myCluster.MaxCov=arrayfun(@(i) mean(mx(Locs{i})), 1:length(Locs));
             myCluster.MinCov=arrayfun(@(i) mean(mn(Locs{i})), 1:length(Locs));
-            myCluster.IsPlasmid=myCluster.MaxCov>10;
+            IsPlasmid=arrayfun(@(i) any(contains(lower(myCluster.Description{i}), 'plasmid')) , 1:length(myCluster.Genes), 'UniformOutput', 0);
+            myCluster.IsPlasmid=[IsPlasmid{:}] | myCluster.MaxCov>4;
             isTra=arrayfun(@(i) any(contains(myCluster.Genes{i}, 'tra')) | ...
-                any(contains(myCluster.Description{i}, 'transposon')), 1:length(myCluster.Genes), 'UniformOutput', 0);
-            myCluster.isTra=[isTra{:}];
+                any(contains(myCluster.Description{i}, 'transpos')), 1:length(myCluster.Genes), 'UniformOutput', 0);
+            myCluster.IsTra=[isTra{:}];
             
             %number of actual definitely independent clusters
             %if the assembly is the same as the assembly of th egenes at

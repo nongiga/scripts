@@ -18,7 +18,7 @@ entry_name=join( [geneTable(:,1), cellstr(num2str(casenums'))], '-') ;
 % give names based on NAME in descriptions
 isGroup = cellfun(@(s)startsWith(s,'group'),geneTable(:,1));
 isHypot=contains(geneTable(:,2), 'hypothetical protein');
-nNameyDesc=find(isGroup & ~isHypot);
+nNameyDesc=find(isGroup & ~isHypot)
 lastWord=cellfun(@extractLast, geneTable(nNameyDesc,2));
 LWlen=cellfun(@length, lastWord);
 isGeneName=LWlen > 1 & ...

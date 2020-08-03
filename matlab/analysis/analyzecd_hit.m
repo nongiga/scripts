@@ -37,13 +37,12 @@ if ~exist(blastfaa, 'file')
 end
 if ~exist('blast/deleted_sequences.fa.groups', 'file')
     
-    system('iterative_cdhit -m deleted_sequences.fa -f deleted_sequences.fa -c deleted_sequences -v');
+    system('iterative_cdhit -m blast/deleted_sequences.fa -f blast/deleted_sequences.fa -c blast/deleted_sequences -v');
 end
 
 %% process cd-hit results to cluster genes
 
-ClusterT=readtable('blast/undefined_p.fa.groups', 'FileType', 'text');
-hypothetical_loc=ismember(geneTable(:,2), 'hypothetical protein');
+ClusterT=readtable('blast/deleted_sequences.fa.groups', 'FileType', 'text');
 clustered_descriptions=geneTable(:,2);
 for i=1:height(ClusterT)
     gene_loc=ismember(entry_name, ClusterT{i,:});
@@ -51,14 +50,14 @@ for i=1:height(ClusterT)
     c= ismember(geneTable(gene_loc,2), 'hypothetical protein');
     % if all the proteins are hypothetical change desc
     if all(c)
-        clustered_descriptions(gene_loc)={['cluster ' num2str(i)]};
+        geneTable(gene_loc,[1 2])={['cluster ' num2str(i)]};
     %if one or more of the genes is defined but the rest are not
     elseif sum(c)
         % apply the description to all hypothetical proteins
         %divide descriptions to 
-        descriptions=geneTable(gene_loc & ~hypothetical_loc,2);
+        descriptions=geneTable(gene_loc & ~isHypot,2);
         disp(descriptions)
-        clustered_descriptions(gene_loc & hypothetical_loc)=descriptions(1);
+        clustered_descriptions(gene_loc & isHypot)=descriptions(1);
         
     end
     
