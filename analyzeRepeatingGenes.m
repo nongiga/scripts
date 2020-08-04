@@ -112,15 +112,10 @@ end
 % look at the 
 figure(2);
 IndelSC=[sum(sigMat==1,2) sum(sigMat==-1,2)];
-imagesc(IndelSC);
+figure(2); h=my_imagesc(IndelSC);
 set(gca, 'ytick',[1:numel(sigGenes)],'yticklabel', sigGenes)
 set(gca, 'xtick',[1 2],'xticklabel', {'Insertion', 'Deletion'})
 colorbar
-
-geneTable(sigLoc,2)
-figure(3);
-clustergram(IndelSC, 'columnlabels', {'Insertion','Deletion'}, ...
-    'rowlabels',sigGenes, 'Symmetric', false)
 
 
 
