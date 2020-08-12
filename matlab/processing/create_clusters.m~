@@ -13,7 +13,6 @@ phage_genes={'bet','Alpha','S_','N_','C_','4_','3_','gin','cox',...
     'ninB','cre','pol', 'cI','C2','rep', 'MOD',...
     'P_','cII','gam','bet','exo', 'yokD', 'gag'};
 
-plasmid_genes={'mbe', 'rop'};
 
 for ins=1:h
     ClusterCase=[];
@@ -113,7 +112,7 @@ for ins=1:h
                myCluster.Plasmids(linIsPlas)=arrayfun(@(i) ...
                 myCase.Plas.Plasmid(IsPlas(:,i)), find(linIsPlas), 'uniformoutput',0); 
             end
-            myCluster.IsPlasmid=myCluster.IsPlasmid | IsPlasmid;
+            myCluster.IsPlasmid=myCluster.IsPlasmid & IsPlasmid;
             
             
             
