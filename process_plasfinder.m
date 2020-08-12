@@ -1,12 +1,11 @@
 
-ResFinder=readtable('resfinder.tsv', 'FileType', 'text');
-
-
+PlasFinder=readtable('plasfinder.tsv', 'FileType', 'text');
 load('gap_data', 'SameStrains')
+
 %%
 
 
-isoName=erase(ResFinder.IsolateID, ["Sample_Maccabi_Ecoli_SeqPlate", "_contigs"]);
+isoName=erase(PlasFinder.IsolateID, ["Sample_Maccabi_Ecoli_SeqPlate", "_contigs"]);
 plateloc=cellfun(@(in) cellfun(@(sp) ismember(sp, in), ...
      SameStrains.seqPlates, 'Uniformoutput', 0), isoName, 'Uniformoutput', 0);
 plateloc=cellfun(@(pl) find(cellfun(@any, pl)), plateloc, 'uniformoutput', 0);
@@ -19,24 +18,26 @@ CaseNum(~isEmpt)=SameStrains.Case(cat(1,plateloc{~isEmpt}));
 for i=1:numel(toLoad)
 
     load(['alignmentReports/tree' toLoad{i} '_20.mat'],'myCase');
-
+    
+    %if isfield(myCase, 'Plas'), continue, end
     disp(toLoad{i})
-
+    
+    
     fullLoc=find(~isEmpt);
-    ResDet=ResFinder((fullLoc(ic==i)), [1 2 3 7 8 9]);
-    ResDet.Isolate=isoName(fullLoc(ic==i));
-    ResStruct=table2struct(ResDet(:,[2:6]), 'toscalar',1);
-    myCase.Res=ResStruct;
-    if iscellstr(myCase.Res.Start)
-        myCase.Res.Start=str2double(myCase.Res.Start);
+    PlasDet=PlasFinder((fullLoc(ic==i)), [1 2 6 7 8 9]);
+    PlasDet.Isolate=isoName(fullLoc(ic==i));
+    PlasStruct=table2struct(PlasDet(:,[2:6]), 'toscalar',1);
+    myCase.Plas=PlasStruct;
+    if iscellstr(myCase.Plas.Start)
+        myCase.Plas.Start=str2double(myCase.Plas.Start);
     end
-    if iscellstr(myCase.Res.End)
-        myCase.Res.End=str2double(myCase.Res.End);
+    if iscellstr(myCase.Plas.End)
+        myCase.Plas.End=str2double(myCase.Plas.End);
     end  
     
-    AssemblyData=split(ResDet.Contig, '_',2);
+    AssemblyData=split(PlasDet.Contig, '_',2);
     AssemblyData=num2cell(str2double(AssemblyData(:,[2 4 6])),1);
-    [myCase.Res.Num myCase.Res.Length myCase.Res.Cov]=AssemblyData{:};
+    [myCase.Plas.Num myCase.Plas.Length myCase.Plas.Cov]=AssemblyData{:};
 
     save(['alignmentReports/tree' toLoad{i} '_20.mat'],'myCase');
 
