@@ -1,4 +1,4 @@
-function [ NumGenesDeletedNtimes, sigGenes, ogSigLoc] = calcGeneHist(geneNames)
+function [ NumGenesDeletedNtimes, sigGenes, ogSigLoc] = calcGeneHist(geneNames, thresh)
 % geneNames: names of genes deleted in each Case
 % {{'gene1','gene2',...}, {'gene1','gene5'}}
 
@@ -12,7 +12,7 @@ function [ NumGenesDeletedNtimes, sigGenes, ogSigLoc] = calcGeneHist(geneNames)
     NumGenesDeletedNtimes = hist(nDelPerGene,1:10);
     
     
-    sigLoc=find(hist(j, unique(j))>3);
+    sigLoc=find(hist(j, unique(j))>=thresh);
     sigGenes=u(sigLoc);
     fi=find(i);
     ogSigLoc=fi(sigLoc);

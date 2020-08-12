@@ -1,10 +1,11 @@
 function make_figure(okgenes, delgenes, sigGenes, iClusterCase)
-    cloc=arrayfun(@(sg) horzcat(okgenes{startsWith(okgenes(:,1),sg),8}), sigGenes, 'uniformoutput', 0);
+    cloc=arrayfun(@(sg) horzcat(okgenes{startsWith(okgenes(:,1),sg),11}), sigGenes, 'uniformoutput', 0);
     sigMat=zeros(numel(sigGenes), numel(iClusterCase));
     for i=1:numel(cloc)
         sigMat(i, cloc{i})=1;
     end
-    delgenes=vertcat(delgenes{:});
+ %   gdelgenes=delgenes;
+%    delgenes=vertcat(delgenes{:});
     sigDesc=arrayfun(@(sg) okgenes(find(startsWith(okgenes(:,1), sg), 1, 'first'),2), sigGenes);
     % look at the 
 
@@ -23,9 +24,7 @@ function make_figure(okgenes, delgenes, sigGenes, iClusterCase)
     function buttondown(s, ~)
         ij = s.UserData;
         sg=sigGenes(ij(1));
-        loc=startsWith(okgenes(:,1),sg);
-        cnum=unique([okgenes{loc, 8}]);
-        delgenes(ismember([delgenes{:,8}],cnum),[1:6 8])
+        cllist=get_cluster_of_all_gene_dels(delgenes, sg,okgenes)
         
     end
 

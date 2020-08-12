@@ -7,15 +7,20 @@ Path.Reports='alignmentReports';
 Path.Clusters='clusterReports';
 disp("create clusters")
 h=1;
+
+phage_genes={'bet','Alpha','S_','N_','C_','4_','3_','gin','cox',...
+    'B_','Q_','O_','L_','X_','Y_','R_','V_','repC','bor','ant','Alpha',...
+    'ninB','cre','pol', 'cI','C2','rep', 'MOD',...
+    'P_','cII','gam','bet','exo', 'yokD'};
+
+
 for ins=1:h
     ClusterCase=[];
     m=moptions{pipevar.report_multi(ins)+1};
     id=[ num2str(pipevar.bp(ins)) m  ];   
 
-    
 %     load([Path.Reports  dl 'all_alignments' id '_report.mat'], 'Case')        
 
-    
     for iCase = 1: numel(Case)
 
         
@@ -47,8 +52,11 @@ for ins=1:h
             myCluster.Insert=[C.Date{mxidx(myCluster.Loc(:,1))}]>[C.Date{mnidx(myCluster.Loc(:,1))}];
             myCluster.MaxCov=arrayfun(@(i) mean(mx(Locs{i})), 1:length(Locs));
             myCluster.MinCov=arrayfun(@(i) mean(mn(Locs{i})), 1:length(Locs));
-            IsPlasmid=arrayfun(@(i) any(contains(lower(myCluster.Description{i}), 'plasmid')) , 1:length(myCluster.Genes), 'UniformOutput', 0);
-            myCluster.IsPlasmid=[IsPlasmid{:}] | myCluster.MaxCov>4;
+            IsPlasmid=arrayfun(@(i) any(contains(lower(myCluster.Description{i}), 'plasmid') | startsWith(myCluster.Genes{i}, 'mbe')) , 1:length(myCluster.Genes), 'UniformOutput', 0);
+            myCluster.IsPlasmid=[IsPlasmid{:}] | myCluster.MaxCov>3;
+            IsPhage=arrayfun(@(i) any(startsWith(myCluster.Genes{i}, phage_genes)) , 1:length(myCluster.Genes), 'UniformOutput', 0);
+            myCluster.IsPhage=[IsPhage{:}];
+
             isTra=arrayfun(@(i) any(contains(myCluster.Genes{i}, 'tra')) | ...
                 any(contains(myCluster.Description{i}, 'transpos')), 1:length(myCluster.Genes), 'UniformOutput', 0);
             myCluster.IsTra=[isTra{:}];

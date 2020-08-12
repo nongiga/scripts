@@ -35,6 +35,7 @@ isPlasmid=cat(1,isPlasmid{:});
 geneTable(:,5)=num2cell(isPlasmid);
 
 
+
 %% define if it is on a transposon
 clusterTra=cat(2,ClusterCase.IsTra);
 isTra=arrayfun(@(ci, cn) repmat(ci, cn, 1), clusterTra, geneNum, 'UniformOutput', false);
@@ -48,6 +49,14 @@ maxCov = cat(1,maxCov{:});
 geneTable(:,7)=num2cell(maxCov);
 
 
+
+
+%% SCAFFOLD IS LARGE
+clusterLength=cat(2,ClusterCase.Length);
+isLong=arrayfun(@(ci, cn) repmat(ci, cn, 1), clusterLength, geneNum, 'UniformOutput', false);
+isLong=cat(1,isLong{:});
+geneTable(:,8)=num2cell(isLong);
+
 %% 
 %geneTable(:,3) = cellfun(@num2str,geneTable(:,3),'UniformOutput',false);
 jCase = cat(1,geneTable{:,3});
@@ -58,7 +67,7 @@ isGroup = cellfun(@(s)startsWith(s,'group'),geneTable(:,1));
 %process the gene table to group all undefined similar proteins
 geneTableMod=process_gene_table(geneTable, ClusterCase);
 % calculate real number of gene deletions
-[nGeneDel_Real, sigGenes, sigLoc]= genes2hist(geneTable(~vertcat(geneTable{:,5}) & ~vertcat(geneTable{:,6})));
+[nGeneDel_Real, sigGenes, sigLoc]= genes2hist(geneTable(~vertcat(geneTable{:,5}) & ~vertcat(geneTable{:,6})& ~vertcat(geneTable{:,8})));
 
 %get table of significant genes
 sigTable=geneTable(startsWith(geneTable(:,1), sigGenes),:);

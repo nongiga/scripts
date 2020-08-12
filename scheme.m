@@ -20,15 +20,22 @@ else
 end
 end
 
-% % inclusion criteria:
-isok = @(isPlas, isTran, isGroup) ~vertcat(isPlas{:}) & ~vertcat(isTran{:}) & ~vertcat(isGroup{:});
+ % Name(1),Description(2), isPlasmid(3), isTransposon(4), isGroup(5)
+% ,hasName(6), givenName(7), isPlasmidCorrect(8), isGenomic(9),isPhage(10),
+ % casenum(11), isInsert(12), clusterNum(13)
 
-delgenes = arrayfun(@(pc, n) [pc.pangenome(horzcat(pc.cGeneID{:}),:) repmat({n}, length(horzcat(pc.cGeneID{:})), 1)], pCase, iClusterCase, 'UniformOutput', 0);
-okgenes=cellfun(@(dg) dg(isok(dg(:,3), dg(:,4), dg(:,5)),:), delgenes, 'uniformoutput', 0);
+% % inclusion criteria:
+isok = @(isPlas, isTran, isGroup, isGenomic) ~vertcat(isPlas{:}) & ~vertcat(isTran{:}) & ~vertcat(isGroup{:}) & vertcat(isGenomic{:});
+
+delgenes = arrayfun(@(pc, n) [pc.pangenome(horzcat(pc.cGeneID{:}),:) repmat({n}, length(horzcat(pc.cGeneID{:})), 1) num2cell(pc.cInsert') num2cell(pc.cNum') num2cell(pc.cPhage')], pCase, iClusterCase, 'UniformOutput', 0);
+
+%this line includes tra and does not limit scaffold length
+%okgenes=cellfun(@(dg) dg(isok(dg(:,8), dg(:,4), dg(:,5), repmat({1}, size(dg,1),1)),:), delgenes, 'uniformoutput', 0);
+okgenes=cellfun(@(dg) dg(isok(dg(:,8), dg(:,4), dg(:,5), dg(:,9)),:), delgenes, 'uniformoutput', 0);
 nGenesPerCase=cellfun(@(og) size(og, 1), okgenes);
 okgenes=vertcat(okgenes{:});
-
-[ nActual, sigGenes,sgLoc] = calcGeneHist(okgenes(:,1));
+delgenes=vertcat(delgenes{:});
+[ nActual, sigGenes,sgLoc] = calcGeneHist(okgenes(:,1), 2);
 figure(1);clf
 bar(nActual);
 hold on
@@ -42,7 +49,7 @@ for ir = 1:Nrand
     randGenes = cell(nC,1);
     for iCase = 1:nC
         pangenome= pCase(iCase).pangenome;
-        ok = isok(pangenome(:,3),pangenome(:,4),pangenome(:,5));
+        ok = isok(pangenome(:,8),pangenome(:,4),pangenome(:,5), pangenome(:,9));
         allgenes = pangenome(ok,:); 
         genes = allgenes(:,1);
         p = randperm(numel(genes));
@@ -52,7 +59,7 @@ for ir = 1:Nrand
     
     end
     randGenes = vertcat(randGenes{:});
-    nGeneDel_Rand(ir,:) = calcGeneHist(randGenes);
+    nGeneDel_Rand(ir,:) = calcGeneHist(randGenes,2);
 end
 
 errorbar(1:10,mean(nGeneDel_Rand),std(nGeneDel_Rand));
@@ -62,9 +69,7 @@ errorbar(1:10,mean(nGeneDel_Rand),std(nGeneDel_Rand));
 mean(sum(nGeneDel_Rand*(1:10)',2))
 length(okgenes(:,1))
 
+%sigGenes=0
+
 make_figure(okgenes, delgenes, sigGenes, iClusterCase)
-%% set the threshold to 4 repetitions and find which genes are those
-
-
-
 
