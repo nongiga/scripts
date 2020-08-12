@@ -15,7 +15,7 @@
 
 prokka(){
 
-	SPADESPATH="spades_assembly"
+
     BASENAME=$(basename $1)
     echo $BASENAME
 
@@ -28,9 +28,10 @@ prokka(){
 		    --force \
 		    --outdir "$2/${BASENAME}_Viruses" \
 		    --prefix "${BASENAME}_Viruses" \
+		    --locustag $BASENAME \
 		    --evalue 0.05 \
 		    --coverage 1 \
-		    --cpus $3 \
+		    --cpus 1 \
 		    --kingdom Viruses \
 		    $1/contigs.fasta
 		fi
@@ -40,8 +41,9 @@ prokka(){
 	    --force \
 	    --outdir $2/$BASENAME \
 	    --prefix $BASENAME \
+	    --locustag $BASENAME \
 	    --evalue 0.05 \
-	    --cpus $3 \
+	    --cpus 1 \
 	    --coverage 1 \
 	    --kingdom Bacteria \
 	    --proteins "$2/${BASENAME}_Viruses/${BASENAME}_Viruses.gbk" \
@@ -60,4 +62,4 @@ export -f prokka
 read -r READSPATH OUTDIR THREADS <<<$(echo "$1 $2 $3")
 
 
-parallel --jobs 2 prokka ::: $READSPATH/* ::: $OUTDIR ::: $THREADS
+parallel --jobs $THREADS prokka ::: $READSPATH/* ::: $OUTDIR
