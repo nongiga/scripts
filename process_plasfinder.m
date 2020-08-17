@@ -16,13 +16,11 @@ CaseNum(~isEmpt)=SameStrains.Case(cat(1,plateloc{~isEmpt}));
 
 [toLoad, ia, ic]=unique(CaseNum(~isEmpt));
 for i=1:numel(toLoad)
-
-    load(['alignmentReports/tree' toLoad{i} '_20.mat'],'myCase');
     
-    %if isfield(myCase, 'Plas'), continue, end
+    if isfield(myCase, 'Plas'), continue, end
     disp(toLoad{i})
-    
-    
+
+
     fullLoc=find(~isEmpt);
     PlasDet=PlasFinder((fullLoc(ic==i)), [1 2 6 7 8 9]);
     PlasDet.Isolate=isoName(fullLoc(ic==i));

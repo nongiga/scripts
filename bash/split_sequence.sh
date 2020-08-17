@@ -14,7 +14,8 @@ split_sequence(){
 			SEQDIR="${SEQDIR%.*}"
 			SEQPATH=$3/$SEQDIR/
 			mkdir -p $1/$SEQDIR; cd $1/$SEQDIR
-			if [ ! -f R1_spl$2.combined.trimmed.fastq.gz ] && [ -f $SEQPATH/R1_combined.trimmed.fastq.gz ]
+			pwd
+			if [ ! -f R1_spl$2.combined.trimmed.fastq.gz ] && [ -f $SEQPATH/R1_combined.trimmed.fastq.gz ];
 			then
 				seqkit sliding \
 				-s $2 -W $2 \

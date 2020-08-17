@@ -7,6 +7,7 @@ for ins=1:h
 
     %run roary
     roary_command=[pipevar.bash_folder{ins} 'roary.sh ' Path.Alignment ' ' num2str(pipevar.mm(ins))];
+    disp(roary_command)
     system(roary_command, '-echo');
 
     %split sequence

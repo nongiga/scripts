@@ -50,7 +50,7 @@ for s=1:nSPs
     %% get info from .gff file to get location of strand on assembly
     AtGFF=GFFAnnotation([IsolateDir '.gff']);
     At=getData(AtGFF, [1:find(cellfun(@isempty, AtGFF.Attributes), 1, 'first')-1]);
-
+    At
     as=cellfun(@(at) extractBetween(at(1:33), '=',';'), {At.Attributes}, 'UniformOutput', false);
     description=cellfun(@(at) extractAfter(at, 'product='), {At.Attributes}, 'UniformOutput', false);
     pfam=cellfun(@(at) extractBetween(at, 'UniProtKB:', ';'), {At.Attributes}, 'UniformOutput', false);
