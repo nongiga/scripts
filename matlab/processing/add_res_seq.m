@@ -1,7 +1,6 @@
-load('gap_data')
 load('seq_res')
 load('clusterReports/all_clusters20_report.mat')
-
+Path.Clusters='clusterReports';
 DrugNames={'Trimethoprim', 'Ciprofloxacin', 'Amoxicillin', 'Cefuroxime', 'Cephalexin', 'Nitrofurantoin', 'Fosfomycin'};
 
 %Trimethoprim/Sulfa, Ciprofloxacin, Amoxicillin/CA, Cefuroxime - Axetil, Cephalexin, Nitrofurantoin, Fosfomycin
@@ -24,8 +23,7 @@ clusterDate=arrayfun(@(i) {IsolatesProfiles.SampleDate(locs(:,i),:)}, 1:size(loc
 [ClusterCase.PhMes]=clusterRes{:};
 [ClusterCase.PhPlate]=clusterPlate{:};
 [ClusterCase.PhDate]=clusterDate{:};
-
-
+save([Path.Clusters  dl 'all_clusters20_report.mat'], 'ClusterCase')
 
 
 % clusterDates

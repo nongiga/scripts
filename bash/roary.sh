@@ -20,6 +20,7 @@ roary_func() {
 		-o $(basename $FN) \
 		-f $FN/roary_output \
 		-e --mafft \
+		-i 99 \
 		$FN/*.gff
 	fi
 }

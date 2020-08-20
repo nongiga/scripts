@@ -4,7 +4,7 @@ load('gap_data', 'SameStrains')
 %%
 
 
-isoName=erase(ResFinder.IsolateID, ["Sample_Maccabi_Ecoli_SeqPlate", "_contigs"]);
+isoName=erase(ResFinder.IsolateID, ["Sample_Maccabi_Ecoli_SeqPlate", "_contigs", "Sample_"]);
 plateloc=cellfun(@(in) cellfun(@(sp) ismember(sp, in), ...
      SameStrains.seqPlates, 'Uniformoutput', 0), isoName, 'Uniformoutput', 0);
 plateloc=cellfun(@(pl) find(cellfun(@any, pl)), plateloc, 'uniformoutput', 0);
@@ -14,19 +14,30 @@ CaseNum=cell(size(isEmpt));
 CaseNum(~isEmpt)=SameStrains.Case(cat(1,plateloc{~isEmpt}));
 
 [toLoad, ia, ic]=unique(CaseNum(~isEmpt));
+fullLoc=find(~isEmpt);
 for i=1:numel(toLoad)
     
 load(['alignmentReports/tree' toLoad{i} '_20.mat'],'myCase');
 
+%if isfield(myCase, 'Res'), continue, end
 
 disp(toLoad{i})
 
-fullLoc=find(~isEmpt);
+
 ResDet=ResFinder((fullLoc(ic==i)), [1 2 3 7 8 9]);
 ResDet.Isolate=isoName(fullLoc(ic==i));
-ResStruct=table2struct(ResDet(:,[2:6]), 'toscalar',1);
 
-myCase.Res=ResStruct;
+myCase.Res=table2struct(ResDet(:,[2:6]), 'toscalar',1);
+
+if iscellstr(myCase.Res.Start)
+    myCase.Res.Start=str2double(myCase.Res.Start);
+end
+
+if iscellstr(myCase.Res.End)
+    myCase.Res.End=str2double(myCase.Res.End);
+end  
+
+
 
 AssemblyData=split(ResDet.Contig, '_',2);
 AssemblyData=num2cell(str2double(AssemblyData(:,[2 4 6])),1);

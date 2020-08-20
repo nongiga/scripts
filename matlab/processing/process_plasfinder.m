@@ -5,25 +5,25 @@ load('gap_data', 'SameStrains')
 %%
 
 
-isoName=erase(PlasFinder.IsolateID, ["Sample_Maccabi_Ecoli_SeqPlate", "_contigs"]);
-plateloc=cellfun(@(in) cellfun(@(sp) ismember(sp, in), ...
-     SameStrains.seqPlates, 'Uniformoutput', 0), isoName, 'Uniformoutput', 0);
-plateloc=cellfun(@(pl) find(cellfun(@any, pl)), plateloc, 'uniformoutput', 0);
+pisoName=erase(PlasFinder.IsolateID, ["Sample_Maccabi_Ecoli_SeqPlate", "_contigs", "Sample_"]);
+pplateloc=cellfun(@(in) cellfun(@(sp) ismember(sp, in), ...
+     SameStrains.seqPlates, 'Uniformoutput', 0), pisoName, 'Uniformoutput', 0);
+pplateloc=cellfun(@(pl) find(cellfun(@any, pl)), pplateloc, 'uniformoutput', 0);
 
-isEmpt=cellfun(@isempty,plateloc);
-CaseNum=cell(size(isEmpt));
-CaseNum(~isEmpt)=SameStrains.Case(cat(1,plateloc{~isEmpt}));
+pisEmpt=cellfun(@isempty,pplateloc);
+pCaseNum=cell(size(pisEmpt));
+pCaseNum(~pisEmpt)=SameStrains.Case(cat(1,pplateloc{~pisEmpt}));
 
-[toLoad, ia, ic]=unique(CaseNum(~isEmpt));
+[toLoad, ia, ic]=unique(pCaseNum(~pisEmpt));
 for i=1:numel(toLoad)
     
-    if isfield(myCase, 'Plas'), continue, end
+    load(['alignmentReports/tree' toLoad{i} '_20.mat'],'myCase');
     disp(toLoad{i})
 
 
-    fullLoc=find(~isEmpt);
+    fullLoc=find(~pisEmpt);
     PlasDet=PlasFinder((fullLoc(ic==i)), [1 2 6 7 8 9]);
-    PlasDet.Isolate=isoName(fullLoc(ic==i));
+    PlasDet.Isolate=pisoName(fullLoc(ic==i));
     PlasStruct=table2struct(PlasDet(:,[2:6]), 'toscalar',1);
     myCase.Plas=PlasStruct;
     if iscellstr(myCase.Plas.Start)

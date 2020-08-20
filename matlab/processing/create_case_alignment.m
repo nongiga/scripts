@@ -50,17 +50,17 @@ for s=1:nSPs
     %% get info from .gff file to get location of strand on assembly
     AtGFF=GFFAnnotation([IsolateDir '.gff']);
     At=getData(AtGFF, [1:find(cellfun(@isempty, AtGFF.Attributes), 1, 'first')-1]);
-    At
-    as=cellfun(@(at) extractBetween(at(1:33), '=',';'), {At.Attributes}, 'UniformOutput', false);
+    scaf=cellfun(@(at) extractBetween(at, 'ID=', ';'), {At.Attributes}, 'UniformOutput', false);
     description=cellfun(@(at) extractAfter(at, 'product='), {At.Attributes}, 'UniformOutput', false);
     pfam=cellfun(@(at) extractBetween(at, 'UniProtKB:', ';'), {At.Attributes}, 'UniformOutput', false);
-    as=cellfun(@(a) a{1}, as, 'UniformOutput', false);
+
+    scaff=vertcat(scaf{:});
     %assign data from .gff struct to the Case struct via merging tables
 %     genes= cellfun(@(at) extractBetween(at, 'gene=',';'), {At.Attributes}, 'UniformOutput', false);
 %     genes(cellfun(@(g) isempty(g), genes))={{'group'}};
 %     genes=[genes{:}]';
     %I can only do this idx assignment since both lists are already sorted
-    [~, ia,ib]=intersect(myCase.GeneSource, as);
+    [~, ia,ib]=intersect(myCase.GeneSource, scaff);
     
 %     f=find(cellfun(@(a,b) ~contains(a,b), myCase.GeneName(ia), genes(ib)))
 %     [myCase.GeneName(ia(f)) genes(ib(f))]
