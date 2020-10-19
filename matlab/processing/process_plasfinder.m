@@ -1,6 +1,9 @@
 
+disp('process plasfinder')
 PlasFinder=readtable('plasfinder.tsv', 'FileType', 'text');
-load('gap_data', 'SameStrains')
+if ~exist('SameStrains', 'var')
+    load('gap_data', 'SameStrains')
+end
 
 %%
 
@@ -18,8 +21,10 @@ pCaseNum(~pisEmpt)=SameStrains.Case(cat(1,pplateloc{~pisEmpt}));
 for i=1:numel(toLoad)
     
     load(['alignmentReports/tree' toLoad{i} '_20.mat'],'myCase');
+    if isfield(myCase, 'Plas')
+        continue
+    end
     disp(toLoad{i})
-
 
     fullLoc=find(~pisEmpt);
     PlasDet=PlasFinder((fullLoc(ic==i)), [1 2 6 7 8 9]);

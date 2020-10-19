@@ -5,6 +5,8 @@
 
 %% initialize
 clear all; close all;
+
+
 %initialize variables
 initialize_gap
 

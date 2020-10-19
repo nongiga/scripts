@@ -19,7 +19,7 @@ for ins=1:height(pipevar)
     SS=SameStrains(SameStrains.InstructionsRef==ins,:);
 
     r=cellfun(@(c) ~exist([Path.Alignment dl 'tree' c dl 'alignments' id '.mat'],'file'), SS.Case);
-    l=SS.Case; s=SS.seqPlates;
+    l=SS.Case(r); s=SS.seqPlates(r);
     
     %if it is not a redo, only start making reports from scratch to the
     %isolates for which files do not exist (in a redo will also go over

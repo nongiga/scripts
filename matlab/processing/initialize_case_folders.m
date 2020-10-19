@@ -3,6 +3,7 @@
 % prokka .gff files from the correct folders into roary 'tree' folders
 
 SS=SameStrains(SameStrains.InstructionsRef==ins,:);
+fprintf("copying over prokka files\n");
 for i = 1:height(SS)
     %make dir
     sp=SS.seqPlates{i};
@@ -28,8 +29,6 @@ for i = 1:height(SS)
         end
         
     else
-        
-        fprintf("%s copying over new prokka files\n", TreeName);
         cellfun(@(s) system(['cp -u ' Path.Prokka dl GlobalName s  dl ...
                  GlobalName s  '.gff ' TreeFolder dl ...
                  GlobalName s '.gff']), sp, 'UniformOutput', 0);

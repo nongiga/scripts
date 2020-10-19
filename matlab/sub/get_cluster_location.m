@@ -1,5 +1,19 @@
-function cl=get_cluster_location(mn,mx,delet, an, gs)
+function cl=get_cluster_location(NCov,delet, an, gs)
+    
+    delpatt=double(NCov>0.05); 
+    delpatt(NCov>0.05 & NCov<0.5 & repmat(~delet,1,size(NCov,2)))=2;
+    delpatt(NCov<0.1 & repmat(delet,1,size(NCov,2)))=0;
+    [~,~,c]=unique(delpatt,'rows');
+    l=find([1 ;diff(c)]~=0 & delet);
+    r=find(diff(c)~=0 & delet(1:end-1));
     cl=[(findstr([0 delet'], [0 1]))' (findstr([delet' 0], [1 0]))'];
+    if numel(l)==numel(r)+1 & l(end)==numel(delet)
+        r(end+1)=numel(delet);
+    end
+    assert(all([l r]==cl, 'all'),'error: difference between new and old method');
+    
+    mn=min(NCov,[],2);
+    mx=max(NCov,[],2);
     
     %expand clusters if genes around still lowly expressed
     %for each cluster
@@ -10,21 +24,14 @@ function cl=get_cluster_location(mn,mx,delet, an, gs)
 
         %define range within the genes can be extended:
         %both constrained by beginning of next cluster and range of genes
-        if c<scl
-            rrange=cl(min(scl,c+1),1)-1;
-        else
-            rrange=min(len, cl(end)+2);
-        end
+        if c<scl, rrange=cl(min(scl,c+1),1)-1;
+        else, rrange=min(len, cl(end)+2); end
         
-        if c>1
-            lrange=cl(max(1,c-1),2)+1;
-        else
-            lrange=max(1, cl(1)-2);
-        end
+        if c>1, lrange=cl(max(1,c-1),2)+1;
+        else, lrange=max(1, cl(1)-2); end
         generange=lrange:rrange;
         
         % what if there is a 0 coverage seperating 2 clusters?
-
         rend=intersect([coords(2):coords(2)+4], generange);
         lend=intersect([coords(1)-4:coords(1)], generange);
         
@@ -37,15 +44,12 @@ function cl=get_cluster_location(mn,mx,delet, an, gs)
         rmnmx=mn(rend)./mx(rend) < 0.5 & mx(rend)>0;
         lmnmx=mn(lend)./mx(lend) < 0.5 & mx(lend)>0;
         
-        
         %look for last coordinate in this range that adheres to the current
         %standard
-        
         rnewcord=min([find(diff(rmnmx)==-1,1,'first') numel(rmnmx)]);
         
         %from the left: the last increase from 0 to 1 that is followed by 1
         %or if all 1's set as 1 (there will always be at least 1 true)
-        
         lnewcord=[find(diff(lmnmx)==1,1,'last')+1 numel(lmnmx)];
         lnewcord=lnewcord(1);
         
@@ -54,7 +58,6 @@ function cl=get_cluster_location(mn,mx,delet, an, gs)
 
     end
 
-    
     %loop again to join clusters
     %if clusters are seperated by a single gene (end of 1 +2>start of 2)
     %and are in the same assembly (an(end of 1)==an(start of 2)
@@ -116,10 +119,5 @@ function cl=get_cluster_location(mn,mx,delet, an, gs)
             c=c+1;
         end
     end
-        
-        
-    
-    
-    
 end
 

@@ -17,7 +17,6 @@ prokka(){
 
 
     BASENAME=$(basename $1)
-    echo $BASENAME
 
     if [ ! -f "$2/${BASENAME}/${BASENAME}.gbk" ]
     then
@@ -58,7 +57,7 @@ prokka(){
 
 export PATH="/media/kishonylab/KishonyStorage/Apps/ncbi-blast-2.10.0+/bin:$PATH"
 export -f prokka
-
+echo "running prokka"
 read -r READSPATH OUTDIR THREADS <<<$(echo "$1 $2 $3")
 
 

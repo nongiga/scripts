@@ -1,4 +1,7 @@
 dl=filesep;
+
+warning('OFF', 'MATLAB:table:ModifiedAndSavedVarnames')
+
 InstructionLines = get_instructions;
 
 h=height(InstructionLines);
@@ -11,11 +14,11 @@ pipevar(:,fn) = InstructionLines(:,fn) ;
 % form path
 PathName=pwd;
 Path=struct('Main', PathName, ...
-            'Alignment',[PathName dl 'Cases'], ...
-            'Reports', [PathName dl 'alignmentReports'], ...
-            'Clusters', [PathName dl 'clusterReports'],...
-             'Prokka', [PathName dl 'prokka'],...
-             'Assembly', [PathName dl 'assembly']);
+            'Alignment','Cases', ...
+            'Reports', 'alignmentReports', ...
+            'Clusters',  'clusterReports',...
+             'Prokka', 'prokka',...
+             'Assembly', 'assembly');
 structfun(@mymkdir, Path);
 
 % Getting isolates details and cretaing list of isolates to select from
@@ -46,6 +49,8 @@ moptions={'','.multi'};
 save([Path.Main dl 'gap_data'], 'Path', 'pipevar', 'IsolatesNames', 'GlobalName', 'SameStrains', 'h', 'moptions');
 
 copy_over_assemblies
+
+disp('initialize_gap completed')
 
 function mymkdir(d)
     if ~isfolder(d), mkdir(d); end

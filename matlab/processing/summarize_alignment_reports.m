@@ -1,13 +1,13 @@
+disp('summarize alignment reports')
 load('gap_data.mat');
 dl=filesep;
 Case=struct('Num',{},'SeqPlate',{},'GeneName',{},'GeneDescription', {},'Date',{},'NCov',{}, 'pval', {}, 'Reads',{});
 
 for ins=1:h
-    
     id=[ num2str(pipevar.bp(ins)) moptions{pipevar.report_multi(ins)+1} ];
-%     if exist([Path.Reports  dl 'all_alignments' id '_report.mat'], 'file')
-%         continue
-%     end
+    if exist([Path.Reports  dl 'all_alignments' id '_report.mat'], 'file')
+        continue
+    end
     
     
      SS=SameStrains(SameStrains.InstructionsRef==ins,:);

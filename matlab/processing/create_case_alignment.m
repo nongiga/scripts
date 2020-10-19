@@ -52,9 +52,10 @@ for s=1:nSPs
     At=getData(AtGFF, [1:find(cellfun(@isempty, AtGFF.Attributes), 1, 'first')-1]);
     scaf=cellfun(@(at) extractBetween(at, 'ID=', ';'), {At.Attributes}, 'UniformOutput', false);
     description=cellfun(@(at) extractAfter(at, 'product='), {At.Attributes}, 'UniformOutput', false);
-    pfam=cellfun(@(at) extractBetween(at, 'UniProtKB:', ';'), {At.Attributes}, 'UniformOutput', false);
-
-    scaff=vertcat(scaf{:});
+    
+    scaff=cell(size(scaf));
+    scaff(cellfun(@numel, scaf)>0)=vertcat(scaf{:});
+    scaff(cellfun(@numel, scaf)==0)={''};
     %assign data from .gff struct to the Case struct via merging tables
 %     genes= cellfun(@(at) extractBetween(at, 'gene=',';'), {At.Attributes}, 'UniformOutput', false);
 %     genes(cellfun(@(g) isempty(g), genes))={{'group'}};
@@ -70,11 +71,11 @@ for s=1:nSPs
     myCase.GeneStart(ia)=[At(ib).Start];
     myCase.GeneEnd(ia)=[At(ib).Stop];
     myCase.Strand(ia)=At(ib).Strand;
-    myCase.ProteinFamily(ia)=pfam(ib)';
-    Assembly=split({At(ib).Reference}, '_');
-    myCase.AssemblyNum(ia)=str2double(Assembly(1, :, 2));
-    myCase.AssemblyLength(ia)=str2double(Assembly(1,:, 4));
-    myCase.AssemblyCov(ia)=str2double(Assembly(1,:, 6));
+    
+    Assembly=squeeze(split({At(ib).Reference}, '_'));
+    myCase.AssemblyNum(ia)=str2double(Assembly(:, 2));
+    myCase.AssemblyLength(ia)=str2double(Assembly(:, 4));
+    myCase.AssemblyCov(ia)=str2double(Assembly(:, 6));
     
 
     %% get alignment details

@@ -44,7 +44,7 @@ cluster_table.ResPh=cellfun(@transpose, cluster_table.ResPh, 'UniformOutput', fa
 
 isMeasured=~any([cluster_table.MinPh{:}; cluster_table.MaxPh{:}]==0)';
 resDiff=cellfun(@minus, cluster_table.MaxPh(isMeasured), cluster_table.MinPh(isMeasured), 'UniformOutput', false);
-isMeasured=find(isMeasured)
+%isMeasured=find(isMeasured)
 %does resistance increase upon insertion?
 sum([resDiff{:}],2)
 
@@ -57,3 +57,27 @@ ct(~isType& ct.IsRes,:).Genes{:};
 %are insertions enriched for resistance genes?
 [h,p]=fishertest([nnz(ct.IsRes & ~ct.Insert) nnz(ct.IsRes & ct.Insert); ...
             nnz(~ct.IsRes & ~ct.Insert) nnz(~ct.IsRes & ct.Insert)])
+
+
+% what to do nanopore on
+
+%cases where phenotypic resistance increased upon insertion
+resDiff=cellfun(@minus, cluster_table.MaxPh, cluster_table.MinPh, 'UniformOutput', false);
+resIncrease=any([resDiff{:}]>1,1)';
+
+
+%cases that had identified resistance genes
+[ct(resIncrease & isMeasured & ct.Insert & ct.IsRes & ~ct.IsPlasmid,:).MaxPh{:}]
+
+%does an insertion of a resistance gene correlate with presence of
+%resistance?
+a=nnz(ct.IsRes & isMeasured & ~resIncrease)
+b=nnz(ct.IsRes & isMeasured & resIncrease)
+c=nnz(~ct.IsRes & isMeasured & ~resIncrease)
+d=nnz(~ct.IsRes & isMeasured & resIncrease)
+
+% yes
+[h, p]=fishertest([a b ; c d])
+
+%does it get down to the resultion of fitting antibiotic to its measured
+%resisatance?

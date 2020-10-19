@@ -19,7 +19,7 @@ for i=1:numel(toLoad)
     
 load(['alignmentReports/tree' toLoad{i} '_20.mat'],'myCase');
 
-%if isfield(myCase, 'Res'), continue, end
+if isfield(myCase, 'Res'), continue, end
 
 disp(toLoad{i})
 
@@ -27,21 +27,27 @@ disp(toLoad{i})
 ResDet=ResFinder((fullLoc(ic==i)), [1 2 3 7 8 9]);
 ResDet.Isolate=isoName(fullLoc(ic==i));
 
-myCase.Res=table2struct(ResDet(:,[2:6]), 'toscalar',1);
-
-if iscellstr(myCase.Res.Start)
-    myCase.Res.Start=str2double(myCase.Res.Start);
-end
-
-if iscellstr(myCase.Res.End)
-    myCase.Res.End=str2double(myCase.Res.End);
-end  
-
-
-
 AssemblyData=split(ResDet.Contig, '_',2);
 AssemblyData=num2cell(str2double(AssemblyData(:,[2 4 6])),1);
-[myCase.Res.Num myCase.Res.Length myCase.Res.Cov]=AssemblyData{:};
+[ResDet.Num ResDet.Length ResDet.Cov]=AssemblyData{:};
+
+if iscellstr(ResDet.Start)
+    ResDet.Start=str2double(ResDet.Start);
+end
+
+if iscellstr(ResDet.End)
+    ResDet.End=str2double(ResDet.End);
+end  
+
+locs=cellfun(@(sp) ismember(isoName(fullLoc(ic==i)),sp), myCase.SeqPlate, 'UniformOutput', false);
+
+for j=1:numel(myCase.SeqPlate)
+    myCase.Res(j)=table2struct(ResDet(locs{j},2:end), 'toscalar',1);
+end
+
+
+
+
 
 save(['alignmentReports/tree' toLoad{i} '_20.mat'],'myCase');
 

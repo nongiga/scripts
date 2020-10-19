@@ -1,6 +1,8 @@
 load('cluster_table');
 
 ct=cluster_table
+
+
 %how much is there of each?
 size(ct,1) %=186
 nnz(ct.IsPhage) %=73
